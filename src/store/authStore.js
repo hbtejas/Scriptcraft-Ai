@@ -29,21 +29,6 @@ const useAuthStore = create((set) => ({
   // Sign up with email
   signUp: async (email, password, metadata = {}) => {
     try {
-      // Validate inputs
-      if (!email || !password) {
-        return { 
-          data: null, 
-          error: { message: 'Email and password are required' } 
-        }
-      }
-
-      if (password.length < 6) {
-        return { 
-          data: null, 
-          error: { message: 'Password must be at least 6 characters long' } 
-        }
-      }
-
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -52,101 +37,60 @@ const useAuthStore = create((set) => ({
           emailRedirectTo: `${window.location.origin}/dashboard`
         }
       })
-
+      
       if (error) {
-        // Handle specific error cases
+        // Better error messages
         if (error.message.includes('already registered')) {
-          return { 
-            data: null, 
-            error: { message: 'This email is already registered. Please sign in.' } 
-          }
+          return { data: null, error: { message: 'This email is already registered. Please sign in.' } }
+        }
+        if (error.message.includes('Password')) {
+          return { data: null, error: { message: 'Password must be at least 6 characters' } }
         }
         return { data: null, error }
       }
-
+      
       return { data, error: null }
     } catch (err) {
       console.error('Sign up error:', err)
-      return { 
-        data: null, 
-        error: { message: 'Network error. Please check your connection and try again.' } 
-      }
+      return { data: null, error: { message: 'Failed to sign up. Please try again.' } }
     }
   },
   
   // Sign in with email
   signIn: async (email, password) => {
     try {
-      // Validate inputs
-      if (!email || !password) {
-        return { 
-          data: null, 
-          error: { message: 'Email and password are required' } 
-        }
-      }
-
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       })
-
+      
       if (error) {
-        // Handle specific error cases
+        // Better error messages
         if (error.message.includes('Invalid login credentials')) {
-          return { 
-            data: null, 
-            error: { message: 'Invalid email or password' } 
-          }
+          return { data: null, error: { message: 'Invalid email or password' } }
         }
         if (error.message.includes('Email not confirmed')) {
-          return { 
-            data: null, 
-            error: { message: 'Please verify your email before signing in' } 
-          }
+          return { data: null, error: { message: 'Please verify your email before signing in' } }
         }
         return { data: null, error }
       }
-
+      
       return { data, error: null }
     } catch (err) {
       console.error('Sign in error:', err)
-      return { 
-        data: null, 
-        error: { message: 'Network error. Please check your connection and try again.' } 
-      }
+      return { data: null, error: { message: 'Failed to sign in. Please check your connection.' } }
     }
   },
   
   // Sign in with Google
   signInWithGoogle: async () => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
-        }
-      })
-
-      if (error) {
-        console.error('Google sign in error:', error)
-        return { 
-          data: null, 
-          error: { message: 'Failed to sign in with Google. Please try again.' } 
-        }
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`
       }
-
-      return { data, error: null }
-    } catch (err) {
-      console.error('Google OAuth error:', err)
-      return { 
-        data: null, 
-        error: { message: 'Network error. Please check your connection and try again.' } 
-      }
-    }
+    })
+    return { data, error }
   },
   
   // Sign out
