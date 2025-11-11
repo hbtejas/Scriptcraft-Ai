@@ -23,12 +23,16 @@ const Login = () => {
     e.preventDefault()
     setLoading(true)
 
+    console.log('🔐 Attempting login...')
     const { error } = await signIn(formData.email, formData.password)
     
     if (error) {
-      toast.error(error.message || 'Failed to sign in')
+      console.error('❌ Login error:', error)
+      const errorMessage = error?.error_description || error?.message || 'Failed to sign in'
+      toast.error(errorMessage)
       setLoading(false)
     } else {
+      console.log('✅ Login successful!')
       toast.success('Welcome back!')
       navigate('/dashboard')
     }
@@ -36,10 +40,13 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     setLoading(true)
+    console.log('🔐 Attempting Google sign in...')
     const { error } = await signInWithGoogle()
     
     if (error) {
-      toast.error(error.message || 'Failed to sign in with Google')
+      console.error('❌ Google sign in error:', error)
+      const errorMessage = error?.error_description || error?.message || 'Failed to sign in with Google'
+      toast.error(errorMessage)
       setLoading(false)
     }
   }

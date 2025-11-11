@@ -28,57 +28,35 @@ const useAuthStore = create((set) => ({
   
   // Sign up with email
   signUp: async (email, password, metadata = {}) => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: metadata,
-          emailRedirectTo: `${window.location.origin}/dashboard`
-        }
-      })
-      
-      if (error) {
-        // Better error messages
-        if (error.message.includes('already registered')) {
-          return { data: null, error: { message: 'This email is already registered. Please sign in.' } }
-        }
-        if (error.message.includes('Password')) {
-          return { data: null, error: { message: 'Password must be at least 6 characters' } }
-        }
-        return { data: null, error }
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: metadata
       }
-      
-      return { data, error: null }
-    } catch (err) {
-      console.error('Sign up error:', err)
-      return { data: null, error: { message: 'Failed to sign up. Please try again.' } }
-    }
+    })
+    return { data, error }
   },
   
   // Sign in with email
   signIn: async (email, password) => {
     try {
+      console.log('🔐 Auth Store: Attempting sign in for:', email)
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       })
       
       if (error) {
-        // Better error messages
-        if (error.message.includes('Invalid login credentials')) {
-          return { data: null, error: { message: 'Invalid email or password' } }
-        }
-        if (error.message.includes('Email not confirmed')) {
-          return { data: null, error: { message: 'Please verify your email before signing in' } }
-        }
+        console.error('❌ Auth Store: Sign in error:', error)
         return { data: null, error }
       }
       
+      console.log('✅ Auth Store: Sign in successful')
       return { data, error: null }
     } catch (err) {
-      console.error('Sign in error:', err)
-      return { data: null, error: { message: 'Failed to sign in. Please check your connection.' } }
+      console.error('❌ Auth Store: Unexpected error:', err)
+      return { data: null, error: err }
     }
   },
   
