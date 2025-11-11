@@ -1,0 +1,33 @@
+# Supabase CLI configuration
+
+# Project ID (replace with your actual project ID after creating Supabase project)
+project_id = "your-project-id"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+port = 54324
+
+[functions]
+enabled = true
+port = 54325
+
+# Edge Functions configuration
+[functions.generate-script]
+verify_jwt = true
+
+[functions.summarize-script]
+verify_jwt = true
+
+[functions.generate-quiz]
+verify_jwt = true
