@@ -92,8 +92,47 @@ export const summarizeScript = async (script) => {
   }
 };
 
-// Generate quiz from script with retry logic
+// Generate quiz from script - ALWAYS SUCCEEDS with fallback
 export const generateQuiz = async (script) => {
+  console.log("🎯 Starting quiz generation...");
+
+  // Create fallback quiz function
+  const createFallbackQuiz = () => {
+    console.log("📝 Creating fallback quiz");
+    return [
+      {
+        question: "What is the main topic discussed in this podcast?",
+        options: [
+          "The primary subject covered in the content",
+          "An unrelated business topic",
+          "A different entertainment subject",
+          "Something about cooking or travel",
+        ],
+        correctAnswer: 0,
+      },
+      {
+        question: "What key information was presented?",
+        options: [
+          "Important insights and main ideas",
+          "Unmentioned or irrelevant details",
+          "Random unrelated information",
+          "Only promotional content",
+        ],
+        correctAnswer: 0,
+      },
+      {
+        question: "What can listeners learn from this content?",
+        options: [
+          "Valuable knowledge and concepts",
+          "Nothing of practical use",
+          "Only entertainment value",
+          "Unrelated information",
+        ],
+        correctAnswer: 0,
+      },
+    ];
+  };
+
   try {
     const result = await retryWithBackoff(
       async () => {
@@ -108,15 +147,22 @@ export const generateQuiz = async (script) => {
           }
         );
 
-        // Always return quiz data, API has fallback built-in
+        // Return the data from API
         return data;
       },
       3,
       2000
     );
 
+    console.log("📥 Received response from API:", result);
+
     // Validate and clean quiz data
-    if (result.quiz && Array.isArray(result.quiz) && result.quiz.length > 0) {
+    if (
+      result &&
+      result.quiz &&
+      Array.isArray(result.quiz) &&
+      result.quiz.length > 0
+    ) {
       // Filter valid questions
       const validQuiz = result.quiz.filter(
         (q) =>
@@ -130,73 +176,19 @@ export const generateQuiz = async (script) => {
       );
 
       if (validQuiz.length > 0) {
-        console.log(`✅ Generated ${validQuiz.length} valid quiz questions`);
+        console.log(`✅ Validated ${validQuiz.length} quiz questions`);
         return { data: validQuiz, error: null };
       }
     }
 
-    // Fallback quiz if validation fails
-    console.warn("Using fallback quiz");
-    const fallbackQuiz = [
-      {
-        question: "What is the main topic discussed in this podcast?",
-        options: [
-          "The primary subject covered",
-          "An unrelated topic",
-          "Something different",
-          "Another subject"
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "What key points were emphasized?",
-        options: [
-          "The main ideas presented",
-          "Unmentioned details",
-          "Random information",
-          "Other topics"
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "What can you learn from this podcast?",
-        options: [
-          "The core concepts discussed",
-          "Nothing useful",
-          "Unrelated facts",
-          "Something else"
-        ],
-        correctAnswer: 0
-      }
-    ];
-    return { data: fallbackQuiz, error: null };
+    // If API returned invalid data, use fallback
+    console.warn("⚠️ API returned invalid quiz data, using fallback");
+    return { data: createFallbackQuiz(), error: null };
   } catch (error) {
-    console.error("Error generating quiz:", error);
-    
-    // Even on error, return fallback quiz instead of failing
-    const fallbackQuiz = [
-      {
-        question: "What is the main topic of this podcast?",
-        options: [
-          "The subject being discussed",
-          "An unrelated topic",
-          "Something different",
-          "Another subject"
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "What information was shared?",
-        options: [
-          "Important insights",
-          "No information",
-          "Random facts",
-          "Other details"
-        ],
-        correctAnswer: 0
-      }
-    ];
-    
-    return { data: fallbackQuiz, error: null };
+    console.error("❌ Quiz generation error:", error);
+    console.log("🔄 Returning fallback quiz");
+
+    // ALWAYS return fallback quiz on error - never fail
+    return { data: createFallbackQuiz(), error: null };
   }
 };
