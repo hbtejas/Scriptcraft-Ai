@@ -29,11 +29,13 @@ Since Supabase CLI login has issues, here's how to deploy Edge Functions manuall
 ### Option A: Using VS Code Extension (Easiest)
 
 1. **Install Supabase Extension**
+
    - Open VS Code Extensions (Ctrl+Shift+X)
    - Search for "Supabase"
    - Install the official extension
 
 2. **Connect to Project**
+
    - Click Supabase icon in sidebar
    - Sign in with your Supabase account
    - Select project: `ounmeqvyjjzlndbhnufk`
@@ -42,8 +44,8 @@ Since Supabase CLI login has issues, here's how to deploy Edge Functions manuall
    - Right-click on `supabase/functions/generate-script`
    - Select "Deploy Function"
    - Repeat for:
-     * `summarize-script`
-     * `generate-quiz`
+     - `summarize-script`
+     - `generate-quiz`
 
 ---
 
@@ -79,9 +81,11 @@ Since Supabase CLI login has issues, here's how to deploy Edge Functions manuall
 ### Option C: Using GitHub Integration
 
 1. **Push Functions to GitHub** (Already Done ✅)
+
    - Your functions are at: https://github.com/hbtejas/ScriptCraftAI
 
 2. **Connect GitHub to Supabase**
+
    - Go to Edge Functions settings
    - Click "Connect GitHub Repository"
    - Select: `hbtejas/ScriptCraftAI`
@@ -161,6 +165,7 @@ After deployment, verify:
 **Cause**: Function not deployed or wrong URL
 
 **Solution**:
+
 - Verify function name matches exactly: `generate-script`, `summarize-script`, `generate-quiz`
 - Check URL: `https://ounmeqvyjjzlndbhnufk.supabase.co/functions/v1/FUNCTION_NAME`
 
@@ -171,6 +176,7 @@ After deployment, verify:
 **Cause**: API key not set or invalid
 
 **Solution**:
+
 1. Go to Edge Functions → Secrets
 2. Verify `GOOGLE_API_KEY` exists
 3. Value should be: `AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY`
@@ -182,7 +188,8 @@ After deployment, verify:
 
 **Cause**: Missing CORS headers
 
-**Solution**: 
+**Solution**:
+
 - Already handled in the code ✅
 - All functions include proper CORS headers
 - If issue persists, check Supabase project settings
@@ -194,10 +201,11 @@ After deployment, verify:
 **Cause**: Function taking too long
 
 **Solution**:
+
 - Gemini API can be slow sometimes
 - Increase timeout in frontend:
   ```javascript
-  timeout: 60000 // 60 seconds
+  timeout: 60000; // 60 seconds
   ```
 - Already set in `src/services/aiService.js` ✅
 
@@ -286,4 +294,3 @@ Your deployment is successful when:
 ---
 
 **Next**: After deployment, test the full app at http://localhost:3000
-

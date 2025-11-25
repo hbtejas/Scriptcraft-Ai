@@ -3,6 +3,7 @@
 ## ✅ Current Status
 
 ### What's Working:
+
 - ✅ Frontend application running on http://localhost:3000
 - ✅ Environment variables configured
 - ✅ All dependencies installed
@@ -10,6 +11,7 @@
 - ✅ Code pushed to GitHub
 
 ### What Needs Setup:
+
 - ⚠️ Supabase Edge Functions need deployment
 - ⚠️ Gemini API key needs to be set in Supabase
 
@@ -22,6 +24,7 @@
 #### Step 1: Deploy Edge Functions via Dashboard
 
 1. **Go to Supabase Dashboard**
+
    - Visit: https://supabase.com/dashboard
    - Select your project: `ounmeqvyjjzlndbhnufk`
 
@@ -29,15 +32,14 @@
    - Click on "Edge Functions" in the sidebar
    - Click "Deploy new function"
    - Upload each function from `supabase/functions/`:
-     * `generate-script/index.ts`
-     * `summarize-script/index.ts`
-     * `generate-quiz/index.ts`
+     - `generate-script/index.ts`
+     - `summarize-script/index.ts`
+     - `generate-quiz/index.ts`
 
 #### Step 2: Set Gemini API Key
 
 1. **Go to Edge Functions Settings**
    - Project Settings → Edge Functions → Secrets
-   
 2. **Add Secret**
    - Click "Add new secret"
    - Name: `GOOGLE_API_KEY`
@@ -95,6 +97,7 @@ The app will run at: **http://localhost:3000**
 ## 📋 Feature Checklist
 
 ### Frontend (✅ Ready)
+
 - ✅ Landing Page
 - ✅ Authentication (Login/Signup)
 - ✅ Dashboard
@@ -104,12 +107,14 @@ The app will run at: **http://localhost:3000**
 - ✅ Script Viewing
 
 ### Backend (⚠️ Needs Deployment)
+
 - ⚠️ Edge Function: generate-script
 - ⚠️ Edge Function: summarize-script
 - ⚠️ Edge Function: generate-quiz
 - ⚠️ Gemini API Key Secret
 
 ### Database (✅ Ready)
+
 - ✅ Supabase connected
 - ✅ Tables created
 - ✅ RLS policies configured
@@ -147,6 +152,7 @@ The app will run at: **http://localhost:3000**
 **Cause**: Edge functions not deployed or API key not set
 
 **Solution**:
+
 1. Deploy edge functions via Supabase Dashboard
 2. Set GOOGLE_API_KEY secret in Supabase
 3. Restart your browser/clear cache
@@ -156,6 +162,7 @@ The app will run at: **http://localhost:3000**
 **Cause**: Invalid or missing API key
 
 **Solution**:
+
 ```powershell
 # Update the API key in Supabase Dashboard
 # Edge Functions → Secrets → GOOGLE_API_KEY
@@ -167,6 +174,7 @@ The app will run at: **http://localhost:3000**
 **Cause**: generate-quiz function not deployed
 
 **Solution**:
+
 1. Check Edge Functions in Supabase Dashboard
 2. Ensure "generate-quiz" is deployed
 3. Check function logs for errors
@@ -202,10 +210,12 @@ ScriptCraftAI/
 ### Deploy to Vercel
 
 1. **Connect GitHub**
+
    - Go to: https://vercel.com
    - Import repository: `hbtejas/ScriptCraftAI`
 
 2. **Configure Environment Variables**
+
    ```
    VITE_SUPABASE_URL=https://ounmeqvyjjzlndbhnufk.supabase.co
    VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -222,6 +232,7 @@ ScriptCraftAI/
 ## 📞 Support
 
 ### Useful Links
+
 - Supabase Dashboard: https://supabase.com/dashboard
 - Gemini API: https://makersuite.google.com/
 - GitHub Repo: https://github.com/hbtejas/ScriptCraftAI
