@@ -5,17 +5,20 @@
 ### Method 1: Deploy with Vercel CLI (Fastest)
 
 #### Step 1: Install Vercel CLI
+
 ```powershell
 npm install -g vercel
 ```
 
 #### Step 2: Login to Vercel
+
 ```powershell
 cd C:\ScriptCraftAI
 vercel login
 ```
 
 #### Step 3: Deploy!
+
 ```powershell
 # Deploy to production
 vercel --prod
@@ -25,6 +28,7 @@ vercel --prod
 ```
 
 **That's it!** Vercel will:
+
 - ✅ Auto-detect Vite framework
 - ✅ Build your project
 - ✅ Deploy to global CDN
@@ -50,10 +54,11 @@ git push -u origin main
 ### Step 2: Connect to Vercel
 
 1. **Go to Vercel**: https://vercel.com/new
-2. **Import Repository**: 
+2. **Import Repository**:
    - Click "Import Git Repository"
    - Select your `ScriptCraftAI` repository
 3. **Configure Project**:
+
    - **Framework Preset**: Vite (auto-detected)
    - **Build Command**: `npm run build` (auto-detected)
    - **Output Directory**: `dist` (auto-detected)
@@ -61,6 +66,7 @@ git push -u origin main
 
 4. **Add Environment Variables**:
    Click "Environment Variables" and add:
+
    ```
    VITE_SUPABASE_URL = https://ounmeqvyjjzlndbhnufk.supabase.co
    VITE_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bm1lcXZ5amp6bG5kYmhudWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE0MTkwNjUsImV4cCI6MjA0Njk5NTA2NX0.iYn7NLMJZrwILN6xbTXSCvLjCdKk07-HU0Jy7Yz4v94
@@ -75,6 +81,7 @@ git push -u origin main
 ## 🎯 Deployment Features
 
 ### What You Get with Vercel:
+
 - ⚡ **Edge Network**: Lightning-fast global CDN
 - 🔄 **Auto-Deploy**: Deploy on every git push
 - 🌐 **Custom Domains**: Free HTTPS + custom domain support
@@ -104,6 +111,7 @@ Your `vercel.json` is already configured with:
 ```
 
 This ensures:
+
 - ✅ SPA routing works (no 404 on refresh)
 - ✅ Security headers enabled
 - ✅ Asset caching optimized
@@ -115,10 +123,10 @@ This ensures:
 
 Add these in Vercel Dashboard → Project Settings → Environment Variables:
 
-| Variable | Value | Environment |
-|----------|-------|-------------|
-| `VITE_SUPABASE_URL` | `https://ounmeqvyjjzlndbhnufk.supabase.co` | Production, Preview, Development |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon key | Production, Preview, Development |
+| Variable                 | Value                                      | Environment                      |
+| ------------------------ | ------------------------------------------ | -------------------------------- |
+| `VITE_SUPABASE_URL`      | `https://ounmeqvyjjzlndbhnufk.supabase.co` | Production, Preview, Development |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon key                     | Production, Preview, Development |
 
 **Important**: Environment variables must start with `VITE_` to be exposed to the browser!
 
@@ -151,7 +159,7 @@ supabase login
 supabase link --project-ref ounmeqvyjjzlndbhnufk
 
 # Set Google API key
-supabase secrets set GOOGLE_API_KEY=AIzaSyCZNIME2xE4jSnhPTSE1hbq7eDPvh-kKi8
+supabase secrets set GOOGLE_API_KEY=AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
 
 # Deploy functions
 supabase functions deploy generate-script
@@ -172,16 +180,21 @@ supabase functions deploy generate-quiz
 ## 🚨 Common Issues & Solutions
 
 ### Issue: Environment variables not working
-**Solution**: 
+
+**Solution**:
+
 - Ensure variables start with `VITE_`
 - Redeploy after adding variables
 - Check Vercel Dashboard → Project Settings → Environment Variables
 
 ### Issue: 404 on page refresh
+
 **Solution**: Already handled by `vercel.json` rewrites
 
 ### Issue: Build fails
+
 **Solution**:
+
 ```powershell
 # Test locally first
 npm run build
@@ -189,6 +202,7 @@ npm run preview
 ```
 
 ### Issue: Authentication not working
+
 **Solution**: Update Supabase redirect URLs with your Vercel domain
 
 ---
@@ -234,6 +248,7 @@ Once connected to GitHub:
 5. **Test** at your Vercel URL
 
 For pull requests:
+
 - Vercel creates a **preview deployment**
 - Test changes before merging
 - Merge PR → auto-deploy to production
@@ -245,12 +260,14 @@ For pull requests:
 Your project is already optimized:
 
 ### Build Optimizations
+
 - ✅ Vite production build with tree-shaking
 - ✅ Code splitting for faster loads
 - ✅ Asset compression (gzip)
 - ✅ Minified CSS and JS
 
 ### Vercel Optimizations
+
 - ✅ Global Edge Network (50+ locations)
 - ✅ Automatic image optimization (if you add images)
 - ✅ Brotli compression
@@ -258,6 +275,7 @@ Your project is already optimized:
 - ✅ Smart CDN caching
 
 ### Current Bundle Size
+
 ```
 Total: ~174 KB (gzipped)
 - React vendor: ~53 KB
@@ -280,6 +298,7 @@ Total: ~174 KB (gzipped)
 5. Vercel automatically provisions SSL certificate
 
 ### Update Supabase
+
 After adding custom domain, update Supabase redirect URLs with your custom domain.
 
 ---
@@ -287,11 +306,13 @@ After adding custom domain, update Supabase redirect URLs with your custom domai
 ## 📈 Monitoring & Analytics
 
 ### Vercel Analytics (Free)
+
 - Page views and unique visitors
 - Performance metrics (Core Web Vitals)
 - Top pages and referrers
 
 ### Enable Analytics:
+
 1. Vercel Dashboard → Project → Analytics
 2. Click "Enable"
 3. Install package (optional for enhanced tracking):
@@ -304,6 +325,7 @@ After adding custom domain, update Supabase redirect URLs with your custom domai
 ## 💰 Pricing
 
 **Free Tier Includes:**
+
 - ✅ Unlimited personal projects
 - ✅ 100 GB bandwidth/month
 - ✅ 100 deployments/day
@@ -341,6 +363,7 @@ After adding custom domain, update Supabase redirect URLs with your custom domai
 ## 🚀 Ready to Deploy?
 
 Choose your method:
+
 1. **Quick**: Run `.\deploy-vercel.bat` (automated script)
 2. **CLI**: Run `vercel --prod` (manual)
 3. **GitHub**: Push to GitHub, import to Vercel (auto-deploy)

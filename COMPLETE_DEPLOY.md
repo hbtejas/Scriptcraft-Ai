@@ -60,12 +60,14 @@ Then choose option 1 (Login), then option 2 (Deploy to production).
 1. **Go to Vercel**: https://vercel.com/new
 
 2. **Import Repository**:
+
    - Click "Import Git Repository"
    - Choose GitHub
    - Select your `ScriptCraftAI` repository
    - Click "Import"
 
 3. **Configure Project** (Auto-detected):
+
    - **Project Name**: `scriptcraftai`
    - **Framework**: Vite ✅ (auto-detected)
    - **Root Directory**: `./`
@@ -74,14 +76,14 @@ Then choose option 1 (Login), then option 2 (Deploy to production).
    - **Install Command**: `npm install` ✅
 
 4. **Add Environment Variables** (IMPORTANT!):
-   
+
    Click "Environment Variables" and add these:
-   
+
    ```
    Name: VITE_SUPABASE_URL
    Value: https://ounmeqvyjjzlndbhnufk.supabase.co
    Environments: Production, Preview, Development (all checked)
-   
+
    Name: VITE_SUPABASE_ANON_KEY
    Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bm1lcXZ5amp6bG5kYmhudWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE0MTkwNjUsImV4cCI6MjA0Njk5NTA2NX0.iYn7NLMJZrwILN6xbTXSCvLjCdKk07-HU0Jy7Yz4v94
    Environments: Production, Preview, Development (all checked)
@@ -103,6 +105,7 @@ After deployment, you'll get a URL like: `https://scriptcraftai.vercel.app`
    https://supabase.com/dashboard/project/ounmeqvyjjzlndbhnufk/auth/url-configuration
 
 2. **Update these settings**:
+
    - **Site URL**: `https://scriptcraftai.vercel.app` (your Vercel URL)
    - **Redirect URLs**: Click "Add URL" and add:
      - `https://scriptcraftai.vercel.app/**`
@@ -127,7 +130,7 @@ supabase login
 supabase link --project-ref ounmeqvyjjzlndbhnufk
 
 # Set Google API key as secret
-supabase secrets set GOOGLE_API_KEY=AIzaSyCZNIME2xE4jSnhPTSE1hbq7eDPvh-kKi8
+supabase secrets set GOOGLE_API_KEY=AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
 
 # Deploy all Edge Functions
 supabase functions deploy generate-script
@@ -147,6 +150,7 @@ If you haven't already:
    https://supabase.com/dashboard/project/ounmeqvyjjzlndbhnufk/sql/new
 
 2. **Copy the migration SQL**:
+
    - Open `C:\ScriptCraftAI\supabase\migrations\001_create_podcast_scripts.sql`
    - Copy all contents
 
@@ -180,6 +184,7 @@ Visit your Vercel URL and test:
 ### Automatic Deployments
 
 Every time you push to GitHub `main` branch:
+
 - ✅ Vercel automatically builds
 - ✅ Deploys to production
 - ✅ No manual steps needed!
@@ -187,6 +192,7 @@ Every time you push to GitHub `main` branch:
 ### Pull Request Previews
 
 When you create a PR:
+
 - ✅ Vercel creates a preview deployment
 - ✅ Test changes before merging
 - ✅ Automatic cleanup after merge
@@ -194,6 +200,7 @@ When you create a PR:
 ### Monitoring
 
 1. **Vercel Dashboard**: https://vercel.com/dashboard
+
    - View deployments
    - Check logs
    - Monitor performance
@@ -209,6 +216,7 @@ When you create a PR:
 ## 📊 What You've Deployed
 
 ### Git Commits: 7 commits
+
 1. Initial commit with full application
 2. GitHub push instructions
 3. Fixes summary
@@ -218,6 +226,7 @@ When you create a PR:
 7. Vercel deployment configuration ✅
 
 ### Files: 57 total
+
 - ✅ Frontend (React + Vite + TailwindCSS)
 - ✅ Backend (Supabase Edge Functions)
 - ✅ Database migration
@@ -227,6 +236,7 @@ When you create a PR:
 - ✅ Automated scripts
 
 ### Features Deployed:
+
 - ✅ AI Script Generation (Google Gemini 2.0)
 - ✅ Script Summarization
 - ✅ Interactive Quiz Generation
@@ -243,6 +253,7 @@ When you create a PR:
 ## 🔧 Optimizations Applied
 
 ### Performance
+
 - ✅ Vite production build (~174 KB gzipped)
 - ✅ Code splitting for faster loads
 - ✅ Lazy loading components
@@ -250,6 +261,7 @@ When you create a PR:
 - ✅ CDN distribution (Vercel Edge)
 
 ### Error Handling
+
 - ✅ 429 rate limit protection
 - ✅ Automatic retry with backoff (2s, 4s, 8s)
 - ✅ User-friendly error messages
@@ -257,6 +269,7 @@ When you create a PR:
 - ✅ Validation for all API responses
 
 ### Security
+
 - ✅ Environment variables for secrets
 - ✅ Row Level Security in database
 - ✅ CORS configured
@@ -265,6 +278,7 @@ When you create a PR:
 - ✅ XSS protection
 
 ### User Experience
+
 - ✅ Loading states with toast notifications
 - ✅ Smooth animations (Framer Motion)
 - ✅ Responsive on all devices
@@ -287,6 +301,7 @@ After deployment, you'll have:
 ## 🎯 Quick Reference Commands
 
 ### GitHub
+
 ```powershell
 git status                    # Check changes
 git add .                     # Stage changes
@@ -295,6 +310,7 @@ git push origin main          # Push to GitHub
 ```
 
 ### Vercel
+
 ```powershell
 vercel                        # Deploy preview
 vercel --prod                 # Deploy production
@@ -304,6 +320,7 @@ vercel open                   # Open dashboard
 ```
 
 ### Supabase
+
 ```powershell
 supabase status               # Check status
 supabase functions deploy     # Deploy functions
@@ -316,21 +333,25 @@ supabase logs                # View logs
 ## 🆘 Troubleshooting
 
 ### Build Fails on Vercel
+
 - Check Vercel build logs
 - Test locally: `npm run build`
 - Verify environment variables
 
 ### Authentication Not Working
+
 - Check Supabase redirect URLs
 - Verify environment variables
 - Check browser console for errors
 
 ### AI Generation Fails
+
 - Verify Edge Functions are deployed
 - Check Google API key in Supabase secrets
 - View Edge Function logs in Supabase
 
 ### 404 on Page Refresh
+
 - Already fixed in `vercel.json`
 - Verify vercel.json is committed
 
@@ -352,23 +373,27 @@ supabase logs                # View logs
 ## ✅ Final Checklist
 
 ### GitHub
+
 - [ ] Repository created
 - [ ] Code pushed to main branch
 - [ ] Repository is accessible
 
 ### Vercel
+
 - [ ] Project deployed
 - [ ] Environment variables added
 - [ ] Site is live and accessible
 - [ ] Custom domain (optional)
 
 ### Supabase
+
 - [ ] Database migration run
 - [ ] Edge Functions deployed
 - [ ] Google API key set as secret
 - [ ] Redirect URLs updated
 
 ### Testing
+
 - [ ] Homepage loads
 - [ ] Authentication works
 - [ ] AI generation works
@@ -381,6 +406,7 @@ supabase logs                # View logs
 ## 🎊 Congratulations!
 
 Your ScriptCraftAI is now:
+
 - 🌍 **Live on the internet**
 - 🚀 **Deployed with Vercel**
 - 📦 **Hosted on GitHub**

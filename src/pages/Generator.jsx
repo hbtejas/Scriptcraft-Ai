@@ -80,7 +80,10 @@ const Generator = () => {
   }
 
   const handleGenerateQuiz = async () => {
-    if (!generatedData.script) return
+    if (!generatedData.script) {
+      toast.error('Please generate a script first')
+      return
+    }
     
     setLoading(true)
     toast.loading('Generating quiz questions...', { id: 'quiz-gen' })
@@ -90,12 +93,26 @@ const Generator = () => {
     toast.dismiss('quiz-gen')
     
     if (error) {
-      toast.error(error)
+      console.error('Quiz generation error:', error)
+      toast.error(`Quiz error: ${error}`)
     } else if (data && Array.isArray(data) && data.length > 0) {
-      setGeneratedData({ ...generatedData, quiz: data })
-      toast.success(`Quiz generated with ${data.length} questions!`)
+      // Validate questions before setting
+      const validQuestions = data.filter(q => 
+        q.question && 
+        q.options && 
+        Array.isArray(q.options) && 
+        q.options.length >= 2
+      )
+      
+      if (validQuestions.length > 0) {
+        setGeneratedData({ ...generatedData, quiz: validQuestions })
+        toast.success(`✅ Quiz generated with ${validQuestions.length} question${validQuestions.length > 1 ? 's' : ''}!`)
+      } else {
+        toast.error('Generated quiz has invalid format. Please try again.')
+      }
     } else {
-      toast.error('Failed to generate valid quiz')
+      console.warn('Quiz data:', data)
+      toast.error('Unable to generate quiz. Please try again or check your script length.')
     }
     
     setLoading(false)

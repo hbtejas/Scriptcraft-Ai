@@ -30,6 +30,7 @@ cd C:\ScriptCraftAI
 ```
 
 The script will:
+
 - ✅ Push your code to GitHub
 - ✅ Build production version
 - ✅ Deploy to Vercel
@@ -66,6 +67,7 @@ Then **redeploy** (Vercel dashboard → Deployments → click "..." → Redeploy
 Go to: https://supabase.com/dashboard/project/ounmeqvyjjzlndbhnufk/auth/url-configuration
 
 Update:
+
 - **Site URL**: `https://scriptcraftai.vercel.app`
 - **Redirect URLs**: Add `https://scriptcraftai.vercel.app/**`
 
@@ -85,7 +87,7 @@ Your app will be accessible at: `https://scriptcraftai.vercel.app`
 npm install -g supabase
 supabase login
 supabase link --project-ref ounmeqvyjjzlndbhnufk
-supabase secrets set GOOGLE_API_KEY=AIzaSyCZNIME2xE4jSnhPTSE1hbq7eDPvh-kKi8
+supabase secrets set GOOGLE_API_KEY=AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
 supabase functions deploy generate-script
 supabase functions deploy summarize-script
 supabase functions deploy generate-quiz
@@ -96,6 +98,7 @@ supabase functions deploy generate-quiz
 ## 📱 Test Your Live Site
 
 Visit your Vercel URL and test:
+
 - ✅ Sign up / Login
 - ✅ Generate script
 - ✅ Create summary
@@ -136,6 +139,7 @@ npm run preview               # Preview build
 ## ✨ What You're Deploying
 
 ### Features
+
 - 🤖 AI Script Generation (Google Gemini 2.0)
 - 📝 Smart Summarization
 - 🎯 Interactive Quizzes
@@ -144,6 +148,7 @@ npm run preview               # Preview build
 - 🎨 Beautiful Dark Theme UI
 
 ### Optimizations
+
 - ⚡ Rate limit protection with retry logic
 - 🔄 Exponential backoff (2s, 4s, 8s)
 - ✅ Input validation
@@ -152,6 +157,7 @@ npm run preview               # Preview build
 - 🌐 Global CDN delivery
 
 ### Tech Stack
+
 - React 18 + Vite 5
 - TailwindCSS 3.4
 - Supabase (Auth + Database + Edge Functions)
@@ -173,6 +179,7 @@ npm run preview               # Preview build
 **Total Time: ~5 minutes from now to LIVE!** ⚡
 
 **Run this command to start:**
+
 ```powershell
 .\deploy-all.bat
 ```

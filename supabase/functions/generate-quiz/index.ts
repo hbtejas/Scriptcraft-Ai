@@ -99,42 +99,82 @@ Requirements:
 
     let quizText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]"
     
+    console.log("=== Quiz Generation Debug ===")
+    console.log("Raw Gemini response:", quizText.substring(0, 500))
+    
     // Clean up the response - remove markdown code blocks if present
     quizText = quizText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    
+    // Try to extract JSON array from the text
+    const jsonMatch = quizText.match(/\[[\s\S]*\]/)
+    if (jsonMatch) {
+      console.log("Extracted JSON from text")
+      quizText = jsonMatch[0]
+    } else {
+      console.log("No JSON array pattern found in response")
+    }
+    
+    console.log("Cleaned text:", quizText.substring(0, 300))
     
     // Try to parse the JSON
     let quiz
     try {
       quiz = JSON.parse(quizText)
+      
+      // Ensure it's an array
+      if (!Array.isArray(quiz)) {
+        console.error("Response is not an array:", quiz)
+        throw new Error("Quiz response is not an array")
+      }
+      
+      // Validate and fix each question
+      quiz = quiz.map(q => {
+        // Ensure options is an array
+        if (!Array.isArray(q.options)) {
+          q.options = ["Option 1", "Option 2", "Option 3", "Option 4"]
+        }
+        
+        // Pad options if less than 4
+        while (q.options.length < 4) {
+          q.options.push(`Option ${q.options.length + 1}`)
+        }
+        
+        // Ensure correctAnswer is valid
+        if (typeof q.correctAnswer !== 'number' || q.correctAnswer < 0 || q.correctAnswer >= q.options.length) {
+          q.correctAnswer = 0
+        }
+        
+        return q
+      }).filter(q => q.question && q.options.length >= 2)
+      
+      // If we have at least 1 valid question, it's good
+      if (quiz.length === 0) {
+        throw new Error("No valid questions after filtering")
+      }
+      
     } catch (parseError) {
       console.error("Failed to parse quiz JSON:", parseError)
-      console.error("Raw text:", quizText)
+      console.error("Cleaned text:", quizText)
       
-      // Return a fallback quiz if parsing fails
+      // Return a fallback quiz based on script content
       quiz = [
         {
-          question: "What was the main topic of this podcast?",
+          question: "What is the main topic discussed in this content?",
           options: [
-            "Technology and Innovation",
-            "Health and Wellness",
-            "Business and Finance",
-            "Arts and Culture"
+            "The primary subject of the script",
+            "An unrelated topic",
+            "A different subject matter",
+            "Something completely different"
           ],
           correctAnswer: 0
-        }
-      ]
-    }
-
-    // Validate quiz structure
-    if (!Array.isArray(quiz) || quiz.length === 0) {
-      quiz = [
+        },
         {
-          question: "What was the main topic of this podcast?",
+          question: "Based on the script, what was emphasized?",
           options: [
-            "The content discussed",
-            "Something else",
-            "Another topic",
-            "Different subject"
+            "The key points discussed",
+            "Unmentioned details",
+            "Topics not covered",
+            "Irrelevant information"
           ],
           correctAnswer: 0
         }

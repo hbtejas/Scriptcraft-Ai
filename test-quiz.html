@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Quiz Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #333;
+            color: #fff;
+            font-family: monospace;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #333;
+        }
+        .error {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+        .success {
+            background: #14532d;
+            color: #86efac;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .question {
+            background: #374151;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .option {
+            padding: 8px;
+            margin: 5px 0;
+            background: #4b5563;
+            border-radius: 3px;
+        }
+        .correct {
+            background: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Quiz Generation Test</h1>
+        <p>Test the quiz generation API directly</p>
+        
+        <div>
+            <label for="script"><strong>Podcast Script:</strong></label>
+            <textarea id="script" placeholder="Enter a podcast script here...">Welcome to today's episode where we explore the fascinating world of artificial intelligence. AI has revolutionized how we interact with technology, from voice assistants to self-driving cars. Machine learning, a subset of AI, allows computers to learn from data without explicit programming. Deep learning uses neural networks to process complex patterns. Today's AI systems can recognize images, understand speech, and even generate creative content like art and music.</textarea>
+        </div>
+
+        <button id="generateBtn" onclick="generateQuiz()">Generate Quiz</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ounmeqvyjjzlndbhnufk.supabase.co';
+        const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bm1lcXZ5amp6bG5kYmhudWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NjU4MjYsImV4cCI6MjA3ODQ0MTgyNn0.Y0NAzc5-hPIHYlIP9RyV_5Hzfstr95eevDYifJwkTpc';
+
+        async function generateQuiz() {
+            const btn = document.getElementById('generateBtn');
+            const resultDiv = document.getElementById('result');
+            const script = document.getElementById('script').value;
+
+            if (!script.trim()) {
+                resultDiv.innerHTML = '<div class="result error">Please enter a script</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            resultDiv.innerHTML = '<div class="result">⏳ Generating quiz...</div>';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-quiz`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${ANON_KEY}`
+                    },
+                    body: JSON.stringify({ script })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP ${response.status}`);
+                }
+
+                if (data.quiz && Array.isArray(data.quiz) && data.quiz.length > 0) {
+                    let html = `<div class="result success">
+                        <h3>✅ Success! Generated ${data.quiz.length} questions</h3>
+                    </div>`;
+
+                    data.quiz.forEach((q, idx) => {
+                        html += `
+                            <div class="question">
+                                <strong>Q${idx + 1}:</strong> ${q.question}
+                                ${q.options.map((opt, optIdx) => `
+                                    <div class="option ${optIdx === q.correctAnswer ? 'correct' : ''}">
+                                        ${optIdx === q.correctAnswer ? '✓ ' : ''}${opt}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    });
+
+                    html += `<div class="result"><strong>Raw Response:</strong><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>⚠️ Invalid Response</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Error</h3>
+                        <p>${error.message}</p>
+                        <pre>${error.stack}</pre>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Generate Quiz';
+            }
+        }
+    </script>
+</body>
+</html>

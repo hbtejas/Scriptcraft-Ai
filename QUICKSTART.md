@@ -1,6 +1,7 @@
 # 🚀 Quick Start - Your Project is Configured!
 
 Your ScriptCraftAI project is now connected to:
+
 - ✅ **Supabase**: https://ounmeqvyjjzlndbhnufk.supabase.co
 - ✅ **Google Gemini 2.0 Flash API**: Configured and ready
 
@@ -34,7 +35,7 @@ supabase link --project-ref ounmeqvyjjzlndbhnufk
 # Set the Google API Key secret in Supabase Dashboard
 # Go to: Project Settings → Edge Functions → Add new secret
 # Name: GOOGLE_API_KEY
-# Value: AIzaSyCZNIME2xE4jSnhPTSE1hbq7eDPvh-kKi8
+# Value: AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
 
 # Deploy all functions
 supabase functions deploy generate-script
@@ -43,10 +44,11 @@ supabase functions deploy generate-quiz
 ```
 
 **OR** Set the API key via Dashboard:
+
 1. Go to: https://supabase.com/dashboard/project/ounmeqvyjjzlndbhnufk/settings/functions
 2. Click **"Add new secret"**
 3. Name: `GOOGLE_API_KEY`
-4. Value: `AIzaSyCZNIME2xE4jSnhPTSE1hbq7eDPvh-kKi8`
+4. Value: `AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY`
 5. Click **Save**
 
 ### 3️⃣ Start Development Server (1 minute)
