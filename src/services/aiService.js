@@ -1,5 +1,6 @@
 import axios from "axios";
 import { retryWithBackoff } from "../utils/retry";
+import { supabase } from "../lib/supabase";
 
 const SUPABASE_FUNCTIONS_URL = import.meta.env.VITE_SUPABASE_URL?.replace(
   "https://",
@@ -7,12 +8,18 @@ const SUPABASE_FUNCTIONS_URL = import.meta.env.VITE_SUPABASE_URL?.replace(
 ).replace(".supabase.co", ".supabase.co/functions/v1");
 
 // Create axios instance with auth headers
-const createApiClient = () => {
+const createApiClient = async () => {
+  // Get the current user session
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY;
+  
   return axios.create({
     baseURL: SUPABASE_FUNCTIONS_URL,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      Authorization: `Bearer ${token}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     },
   });
 };
@@ -22,7 +29,7 @@ export const generateScript = async (topic, tone = "conversational") => {
   try {
     const result = await retryWithBackoff(
       async () => {
-        const api = createApiClient();
+        const api = await createApiClient();
         const { data } = await api.post(
           "/generate-script",
           {
@@ -60,7 +67,7 @@ export const summarizeScript = async (script) => {
   try {
     const result = await retryWithBackoff(
       async () => {
-        const api = createApiClient();
+        const api = await createApiClient();
         const { data } = await api.post(
           "/summarize-script",
           {
@@ -94,11 +101,11 @@ export const summarizeScript = async (script) => {
 
 // Generate quiz from script - ALWAYS SUCCEEDS with fallback
 export const generateQuiz = async (script) => {
-  console.log("🎯 Starting quiz generation...");
+  console.log(" Starting quiz generation...");
 
   // Create fallback quiz function
   const createFallbackQuiz = () => {
-    console.log("📝 Creating fallback quiz");
+    console.log(" Creating fallback quiz");
     return [
       {
         question: "What is the main topic discussed in this podcast?",
@@ -136,7 +143,7 @@ export const generateQuiz = async (script) => {
   try {
     const result = await retryWithBackoff(
       async () => {
-        const api = createApiClient();
+        const api = await createApiClient();
         const { data } = await api.post(
           "/generate-quiz",
           {
@@ -154,7 +161,7 @@ export const generateQuiz = async (script) => {
       2000
     );
 
-    console.log("📥 Received response from API:", result);
+    console.log(" Received response from API:", result);
 
     // Validate and clean quiz data
     if (
@@ -176,17 +183,17 @@ export const generateQuiz = async (script) => {
       );
 
       if (validQuiz.length > 0) {
-        console.log(`✅ Validated ${validQuiz.length} quiz questions`);
+        console.log(` Validated ${validQuiz.length} quiz questions`);
         return { data: validQuiz, error: null };
       }
     }
 
     // If API returned invalid data, use fallback
-    console.warn("⚠️ API returned invalid quiz data, using fallback");
+    console.warn(" API returned invalid quiz data, using fallback");
     return { data: createFallbackQuiz(), error: null };
   } catch (error) {
-    console.error("❌ Quiz generation error:", error);
-    console.log("🔄 Returning fallback quiz");
+    console.error(" Quiz generation error:", error);
+    console.log(" Returning fallback quiz");
 
     // ALWAYS return fallback quiz on error - never fail
     return { data: createFallbackQuiz(), error: null };
