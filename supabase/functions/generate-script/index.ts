@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const GEMINI_API_KEY = Deno.env.get("GOOGLE_API_KEY")
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
-async function fetchWithRetry(url: string, options: any, maxRetries = 8) {
+async function fetchWithRetry(url: string, options: any, maxRetries = 3) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(url, options)
@@ -13,17 +13,14 @@ async function fetchWithRetry(url: string, options: any, maxRetries = 8) {
         response.status === 429 || 
         response.status === 503 ||
         data.error?.status === "RESOURCE_EXHAUSTED" ||
-        data.error?.status === "UNAVAILABLE" ||
-        data.error?.message?.includes("overloaded") ||
-        data.error?.message?.includes("quota")
+        data.error?.status === "UNAVAILABLE"
       ) {
         if (attempt === maxRetries) {
-          throw new Error("Service temporarily unavailable. Please try again in a few minutes.")
+          throw new Error("Service temporarily unavailable. Please try again in a moment.")
         }
         
-        const delays = [5000, 10000, 20000, 30000, 45000, 60000, 90000, 120000]
-        const delayMs = delays[attempt] || 120000
-        console.log(`Model overloaded. Retrying in ${delayMs/1000}s (attempt ${attempt + 1}/${maxRetries})`)
+        const delayMs = Math.min(1000 * Math.pow(2, attempt), 8000)
+        console.log(`Rate limited. Retrying in ${delayMs/1000}s (attempt ${attempt + 1}/${maxRetries + 1})`)
         await new Promise(resolve => setTimeout(resolve, delayMs))
         continue
       }
@@ -32,7 +29,7 @@ async function fetchWithRetry(url: string, options: any, maxRetries = 8) {
     } catch (error) {
       if (attempt === maxRetries) throw error
       
-      const delayMs = (attempt + 1) * 10000
+      const delayMs = 1000 * (attempt + 1)
       console.log(`Request failed. Retrying in ${delayMs/1000}s`)
       await new Promise(resolve => setTimeout(resolve, delayMs))
     }
@@ -102,9 +99,9 @@ Format: Write the script as if a host is speaking directly to the audience. Incl
             }]
           }],
           generationConfig: {
-            temperature: 0.9,
-            topK: 40,
-            topP: 0.95,
+            temperature: 0.8,
+            topK: 32,
+            topP: 0.9,
             maxOutputTokens: 2048,
           },
           safetySettings: [

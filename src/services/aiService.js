@@ -10,10 +10,12 @@ const SUPABASE_FUNCTIONS_URL = import.meta.env.VITE_SUPABASE_URL?.replace(
 // Create axios instance with auth headers
 const createApiClient = async () => {
   // Get the current user session
-  const { data: { session } } = await supabase.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY;
-  
+
   return axios.create({
     baseURL: SUPABASE_FUNCTIONS_URL,
     headers: {
@@ -37,7 +39,7 @@ export const generateScript = async (topic, tone = "conversational") => {
             tone,
           },
           {
-            timeout: 180000, // 180 second timeout for AI generation
+            timeout: 60000, // 60 second timeout for AI generation
           }
         );
         return data;
@@ -74,7 +76,7 @@ export const summarizeScript = async (script) => {
             script,
           },
           {
-            timeout: 90000, // 90 second timeout
+            timeout: 30000, // 30 second timeout
           }
         );
         return data;
