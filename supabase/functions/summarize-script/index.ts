@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY")
-const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+const GOOGLE_API_KEY = Deno.env.get("GOOGLE_API_KEY")
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent"
 
 async function fetchWithRetry(url: string, options: any, maxRetries = 3) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -75,28 +75,30 @@ Provide a summary that:
 4. Is approximately 150-200 words`
 
     const { response, data } = await fetchWithRetry(
-      ANTHROPIC_API_URL,
+      `${GEMINI_API_URL}?key=${GOOGLE_API_KEY}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01"
         },
         body: JSON.stringify({
-          model: "claude-3-5-sonnet-20241022",
-          max_tokens: 512,
-          temperature: 0.7,
-          messages: [{
-            role: "user",
-            content: prompt
-          }]
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 512,
+          },
         }),
       }
     )
 
     if (!response.ok) {
-      console.error("Claude API error:", data)
+      console.error("DeepSeek API error:", data)
       return new Response(
         JSON.stringify({
           error: data.error?.message || "Failed to generate summary",
@@ -112,7 +114,7 @@ Provide a summary that:
       )
     }
 
-    const summary = data?.content?.[0]?.text || "No summary generated"
+    const summary = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No summary generated"
 
     return new Response(
       JSON.stringify({ summary }),
