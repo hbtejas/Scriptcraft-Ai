@@ -1,42 +1,45 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const GEMINI_API_KEY = Deno.env.get("GOOGLE_API_KEY")
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
-// Retry with exponential backoff for rate limits
-async function fetchWithRetry(url: string, options: any, maxRetries = 5) {
+async function fetchWithRetry(url: string, options: any, maxRetries = 8) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(url, options)
       const data = await response.json()
 
-      // Check for rate limit error
-      if (response.status === 429 || data.error?.status === "RESOURCE_EXHAUSTED") {
+      if (
+        response.status === 429 || 
+        response.status === 503 ||
+        data.error?.status === "RESOURCE_EXHAUSTED" ||
+        data.error?.status === "UNAVAILABLE" ||
+        data.error?.message?.includes("overloaded") ||
+        data.error?.message?.includes("quota")
+      ) {
         if (attempt === maxRetries) {
-          throw new Error("Rate limit exceeded after maximum retries. Please wait a few minutes and try again.")
+          throw new Error("Service temporarily unavailable. Please try again in a few minutes.")
         }
         
-        // Exponential backoff: 2s, 5s, 10s, 20s, 40s
-        const delayMs = (attempt + 1) * 15000
-        console.log(`Rate limited. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
+        const delays = [5000, 10000, 20000, 30000, 45000, 60000, 90000, 120000]
+        const delayMs = delays[attempt] || 120000
+        console.log(`Model overloaded. Retrying in ${delayMs/1000}s (attempt ${attempt + 1}/${maxRetries})`)
         await new Promise(resolve => setTimeout(resolve, delayMs))
         continue
       }
 
-      // Return successful or non-retryable error response
       return { response, data }
     } catch (error) {
       if (attempt === maxRetries) throw error
       
-      const delayMs = (attempt + 1) * 15000
-      console.log(`Request failed. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
+      const delayMs = (attempt + 1) * 10000
+      console.log(`Request failed. Retrying in ${delayMs/1000}s`)
       await new Promise(resolve => setTimeout(resolve, delayMs))
     }
   }
 }
 
 serve(async (req) => {
-  // Handle CORS
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: {
@@ -129,7 +132,6 @@ Requirements:
 
     let quizText = data?.candidates?.[0]?.content?.parts?.[0]?.text || ""
     
-    // Extract JSON from markdown code blocks if present
     const jsonMatch = quizText.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/) || 
                       quizText.match(/(\[[\s\S]*?\])/)
     
@@ -137,17 +139,14 @@ Requirements:
       quizText = jsonMatch[1]
     }
 
-    // Parse and validate the quiz
     let quiz
     try {
       quiz = JSON.parse(quizText)
       
-      // Validate structure
       if (!Array.isArray(quiz) || quiz.length === 0) {
         throw new Error("Invalid quiz format")
       }
       
-      // Ensure each question has required fields
       quiz = quiz.map(q => ({
         question: q.question || "",
         options: Array.isArray(q.options) ? q.options : [],
@@ -194,4 +193,3 @@ Requirements:
     )
   }
 })
-
