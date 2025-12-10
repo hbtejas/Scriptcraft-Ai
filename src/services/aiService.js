@@ -37,7 +37,7 @@ export const generateScript = async (topic, tone = "conversational") => {
             tone,
           },
           {
-            timeout: 60000, // 60 second timeout for AI generation
+            timeout: 180000, // 180 second timeout for AI generation
           }
         );
         return data;
@@ -74,7 +74,7 @@ export const summarizeScript = async (script) => {
             script,
           },
           {
-            timeout: 30000, // 30 second timeout
+            timeout: 90000, // 90 second timeout
           }
         );
         return data;

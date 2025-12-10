@@ -13,13 +13,18 @@ export const retryWithBackoff = async (fn, maxRetries = 3, initialDelay = 1000) 
       return await fn()
     } catch (error) {
       lastError = error
+
+      // Retry on rate limits, timeouts, and server errors
+      const shouldRetry = 
+        error.response?.status === 429 || 
+        error.response?.status === 503 ||
+        error.response?.status === 500 ||
+        error.code === 'ECONNABORTED' ||
+        error.message?.includes('timeout')
       
-      // Don't retry if it's not a rate limit error
-      if (error.response?.status !== 429) {
+      if (!shouldRetry) {
         throw error
-      }
-      
-      // Don't wait after the last retry
+      }      // Don't wait after the last retry
       if (i < maxRetries - 1) {
         const delay = initialDelay * Math.pow(2, i) // Exponential backoff
         console.log(`Rate limited. Retrying in ${delay}ms... (Attempt ${i + 1}/${maxRetries})`)
