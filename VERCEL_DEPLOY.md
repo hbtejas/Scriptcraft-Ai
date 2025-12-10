@@ -159,7 +159,7 @@ supabase login
 supabase link --project-ref ounmeqvyjjzlndbhnufk
 
 # Set Google API key
-supabase secrets set GOOGLE_API_KEY=AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o
+supabase secrets set GOOGLE_API_KEY=AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
 
 # Deploy functions
 supabase functions deploy generate-script

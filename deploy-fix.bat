@@ -13,7 +13,7 @@ supabase functions deploy generate-quiz
 echo.
 echo [2/3] Setting Gemini API Key...
 echo.
-supabase secrets set GOOGLE_API_KEY=AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o
+supabase secrets set GOOGLE_API_KEY=AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
 
 echo.
 echo [3/3] Building and deploying frontend...

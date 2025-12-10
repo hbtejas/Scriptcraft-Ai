@@ -7,7 +7,7 @@
 **Problem**: API returning 403 Forbidden error
 **Solution**:
 
-- Updated API key to: `AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o`
+- Updated API key to: `AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg`
 - Updated in all documentation files
 - Updated in `.env.example` file
 
@@ -107,7 +107,7 @@ supabase functions deploy generate-quiz
 #### Step 2: Set API Key Secret
 
 ```powershell
-supabase secrets set GOOGLE_API_KEY=AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o
+supabase secrets set GOOGLE_API_KEY=AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
 ```
 
 #### Step 3: Build Frontend

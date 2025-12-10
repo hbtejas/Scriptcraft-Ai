@@ -4,7 +4,7 @@
 
 ### 1. Updated Google API Key in All Documentation
 - **Old Key**: AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
-- **New Key**: AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o
+- **New Key**: AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
 - **Files Updated**: All .md, .bat, and .example files containing the old key
 
 ### 2. Set New API Key as Supabase Secret

@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const GEMINI_API_KEY = Deno.env.get("GOOGLE_API_KEY")
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 // Retry with exponential backoff for rate limits
 async function fetchWithRetry(url: string, options: any, maxRetries = 5) {
@@ -17,7 +17,7 @@ async function fetchWithRetry(url: string, options: any, maxRetries = 5) {
         }
         
         // Exponential backoff: 2s, 5s, 10s, 20s, 40s
-        const delayMs = Math.min(2000 * Math.pow(2, attempt), 40000)
+        const delayMs = (attempt + 1) * 15000
         console.log(`Rate limited. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
         await new Promise(resolve => setTimeout(resolve, delayMs))
         continue
@@ -28,7 +28,7 @@ async function fetchWithRetry(url: string, options: any, maxRetries = 5) {
     } catch (error) {
       if (attempt === maxRetries) throw error
       
-      const delayMs = Math.min(2000 * Math.pow(2, attempt), 40000)
+      const delayMs = (attempt + 1) * 15000
       console.log(`Request failed. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
       await new Promise(resolve => setTimeout(resolve, delayMs))
     }
@@ -194,3 +194,4 @@ Requirements:
     )
   }
 })
+
