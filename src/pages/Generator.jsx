@@ -7,7 +7,6 @@ import useAuthStore from "../store/authStore";
 import {
   generateScript,
   summarizeScript,
-  generateQuiz,
 } from "../services/aiService";
 import { createScript } from "../services/scriptService";
 import toast from "react-hot-toast";
@@ -25,7 +24,6 @@ const Generator = () => {
   const [generatedData, setGeneratedData] = useState({
     script: "",
     summary: "",
-    quiz: null,
   });
 
   const tones = [
@@ -94,100 +92,7 @@ const Generator = () => {
     setLoading(false);
   };
 
-  const handleGenerateQuiz = async () => {
-    if (!generatedData.script) {
-      toast.error("Please generate a script first");
-      return;
-    }
 
-    setLoading(true);
-    toast.loading("Generating quiz questions...", { id: "quiz-gen" });
-
-    try {
-      const { data, error } = await generateQuiz(generatedData.script);
-
-      toast.dismiss("quiz-gen");
-
-      // The service always returns data with fallback, so this should always work
-      if (data && Array.isArray(data) && data.length > 0) {
-        console.log("✅ Quiz data received:", data.length, "questions");
-        setGeneratedData({ ...generatedData, quiz: data });
-        toast.success(
-          `✅ Quiz ready! ${data.length} question${
-            data.length > 1 ? "s" : ""
-          } generated`
-        );
-      } else {
-        // Emergency fallback - create quiz directly in UI
-        console.warn("⚠️ Creating emergency fallback quiz");
-        const emergencyQuiz = [
-          {
-            question: "What is the main topic of this podcast?",
-            options: [
-              "The primary subject covered in the content",
-              "An unrelated business topic",
-              "A different subject matter",
-              "Something completely different",
-            ],
-            correctAnswer: 0,
-          },
-          {
-            question: "What key information was presented?",
-            options: [
-              "Important insights and main ideas",
-              "Unmentioned or irrelevant details",
-              "Random unrelated information",
-              "Only promotional content",
-            ],
-            correctAnswer: 0,
-          },
-          {
-            question: "What can listeners learn from this content?",
-            options: [
-              "Valuable knowledge and concepts",
-              "Nothing of practical use",
-              "Only entertainment value",
-              "Unrelated information",
-            ],
-            correctAnswer: 0,
-          },
-        ];
-        setGeneratedData({ ...generatedData, quiz: emergencyQuiz });
-        toast.success("✅ Quiz generated with 3 questions!");
-      }
-    } catch (error) {
-      console.error("❌ Quiz generation error:", error);
-      toast.dismiss("quiz-gen");
-
-      // Always provide a quiz even on complete failure
-      const emergencyQuiz = [
-        {
-          question: "What is the main topic of this podcast?",
-          options: [
-            "The primary subject covered",
-            "An unrelated topic",
-            "A different subject",
-            "Something else entirely",
-          ],
-          correctAnswer: 0,
-        },
-        {
-          question: "What information was shared?",
-          options: [
-            "Key insights and ideas",
-            "No useful information",
-            "Random facts only",
-            "Unrelated content",
-          ],
-          correctAnswer: 0,
-        },
-      ];
-      setGeneratedData({ ...generatedData, quiz: emergencyQuiz });
-      toast.success("✅ Quiz generated with 2 questions!");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSaveScript = async () => {
     if (!formData.title.trim()) {
@@ -207,7 +112,6 @@ const Generator = () => {
       prompt: formData.prompt,
       script: generatedData.script,
       summary: generatedData.summary,
-      quiz: generatedData.quiz,
     };
 
     const { data, error } = await createScript(scriptData);
@@ -374,58 +278,7 @@ const Generator = () => {
               )}
             </div>
 
-            {/* Quiz */}
-            <div className="card">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Quiz</h3>
-                {!generatedData.quiz && (
-                  <button
-                    onClick={handleGenerateQuiz}
-                    disabled={loading}
-                    className="btn-primary text-sm flex items-center space-x-2"
-                  >
-                    <FiCheckCircle className="w-4 h-4" />
-                    <span>{loading ? "Generating..." : "Generate Quiz"}</span>
-                  </button>
-                )}
-              </div>
-              {generatedData.quiz ? (
-                <div className="space-y-4">
-                  {Array.isArray(generatedData.quiz) &&
-                    generatedData.quiz.map((question, index) => (
-                      <div key={index} className="bg-dark-900 rounded-lg p-4">
-                        <p className="font-semibold mb-3">
-                          {index + 1}. {question.question}
-                        </p>
-                        <div className="space-y-2">
-                          {question.options?.map((option, optIndex) => (
-                            <div
-                              key={optIndex}
-                              className={`p-3 rounded-lg border ${
-                                optIndex === question.correctAnswer
-                                  ? "border-green-500 bg-green-500/10"
-                                  : "border-dark-600"
-                              }`}
-                            >
-                              {option}
-                              {optIndex === question.correctAnswer && (
-                                <span className="ml-2 text-green-400">
-                                  ✓ Correct
-                                </span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <p className="text-dark-400 text-center py-8">
-                  Click "Generate Quiz" to create quiz questions from your
-                  script
-                </p>
-              )}
-            </div>
+
 
             {/* Save Button */}
             <div className="sticky bottom-6 flex justify-center">

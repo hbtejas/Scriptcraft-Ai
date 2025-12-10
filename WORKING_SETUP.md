@@ -43,7 +43,7 @@
 2. **Add Secret**
    - Click "Add new secret"
    - Name: `GOOGLE_API_KEY`
-   - Value: `AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg`
+   - Value: `AIzaSyBjZn2L10zCxd7eY9u1S_1TXLO2qJYpaWI`
    - Click "Save"
 
 ---
@@ -60,7 +60,7 @@ supabase login --token YOUR_ACCESS_TOKEN
 supabase link --project-ref ounmeqvyjjzlndbhnufk
 
 # Set API key
-supabase secrets set GOOGLE_API_KEY=AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
+supabase secrets set GOOGLE_API_KEY=AIzaSyBjZn2L10zCxd7eY9u1S_1TXLO2qJYpaWI
 
 # Deploy functions
 supabase functions deploy generate-script
@@ -166,7 +166,7 @@ The app will run at: **http://localhost:3000**
 ```powershell
 # Update the API key in Supabase Dashboard
 # Edge Functions → Secrets → GOOGLE_API_KEY
-# Value: AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
+# Value: AIzaSyBjZn2L10zCxd7eY9u1S_1TXLO2qJYpaWI
 ```
 
 ### Issue: Quiz not generating

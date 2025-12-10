@@ -52,7 +52,7 @@ echo    - generate-quiz
 echo.
 echo 5. Set the secret in Edge Functions settings:
 echo    Name:  GOOGLE_API_KEY
-echo    Value: AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
+echo    Value: AIzaSyBjZn2L10zCxd7eY9u1S_1TXLO2qJYpaWI
 echo.
 echo 6. Start development server:
 echo    npm run dev

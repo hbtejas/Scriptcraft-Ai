@@ -87,7 +87,7 @@ Your app will be accessible at: `https://scriptcraftai.vercel.app`
 npm install -g supabase
 supabase login
 supabase link --project-ref ounmeqvyjjzlndbhnufk
-supabase secrets set GOOGLE_API_KEY=AIzaSyAIEB2N_R93aRbRSFynbrq2UCtih_p9Isg
+supabase secrets set GOOGLE_API_KEY=AIzaSyBjZn2L10zCxd7eY9u1S_1TXLO2qJYpaWI
 supabase functions deploy generate-script
 supabase functions deploy summarize-script
 supabase functions deploy generate-quiz
