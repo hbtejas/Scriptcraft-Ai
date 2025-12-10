@@ -3,6 +3,38 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 const GEMINI_API_KEY = Deno.env.get("GOOGLE_API_KEY")
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
+// Retry with exponential backoff for rate limits
+async function fetchWithRetry(url: string, options: any, maxRetries = 5) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+
+      // Check for rate limit error
+      if (response.status === 429 || data.error?.status === "RESOURCE_EXHAUSTED") {
+        if (attempt === maxRetries) {
+          throw new Error("Rate limit exceeded after maximum retries. Please wait a few minutes and try again.")
+        }
+        
+        // Exponential backoff: 2s, 5s, 10s, 20s, 40s
+        const delayMs = Math.min(2000 * Math.pow(2, attempt), 40000)
+        console.log(`Rate limited. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
+        await new Promise(resolve => setTimeout(resolve, delayMs))
+        continue
+      }
+
+      // Return successful or non-retryable error response
+      return { response, data }
+    } catch (error) {
+      if (attempt === maxRetries) throw error
+      
+      const delayMs = Math.min(2000 * Math.pow(2, attempt), 40000)
+      console.log(`Request failed. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries})`)
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+    }
+  }
+}
+
 serve(async (req) => {
   // Handle CORS
   if (req.method === "OPTIONS") {
@@ -21,9 +53,9 @@ serve(async (req) => {
     if (!script) {
       return new Response(
         JSON.stringify({ error: "Script is required" }),
-        { 
+        {
           status: 400,
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*"
           }
@@ -42,7 +74,7 @@ Provide a summary that:
 3. Is written in an accessible, easy-to-understand style
 4. Is approximately 150-200 words`
 
-    const response = await fetch(
+    const { response, data } = await fetchWithRetry(
       GEMINI_API_URL,
       {
         method: "POST",
@@ -58,26 +90,24 @@ Provide a summary that:
           }],
           generationConfig: {
             temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
+            topK: 32,
+            topP: 0.9,
             maxOutputTokens: 512,
           },
         }),
       }
     )
 
-    const data = await response.json()
-
     if (!response.ok) {
       console.error("Gemini API error:", data)
       return new Response(
-        JSON.stringify({ 
-          error: "Failed to generate summary from AI service",
-          details: data.error?.message 
+        JSON.stringify({
+          error: data.error?.message || "Failed to generate summary",
+          details: data.error?.message
         }),
-        { 
+        {
           status: response.status,
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*"
           }
@@ -90,7 +120,7 @@ Provide a summary that:
     return new Response(
       JSON.stringify({ summary }),
       {
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*"
         },
@@ -100,9 +130,9 @@ Provide a summary that:
     console.error("Error:", error)
     return new Response(
       JSON.stringify({ error: error.message || "Internal server error" }),
-      { 
+      {
         status: 500,
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*"
         }
