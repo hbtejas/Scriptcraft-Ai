@@ -35,7 +35,7 @@ supabase link --project-ref ounmeqvyjjzlndbhnufk
 # Set the Google API Key secret in Supabase Dashboard
 # Go to: Project Settings → Edge Functions → Add new secret
 # Name: GOOGLE_API_KEY
-# Value: AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY
+# Value: AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o
 
 # Deploy all functions
 supabase functions deploy generate-script
@@ -48,7 +48,7 @@ supabase functions deploy generate-quiz
 1. Go to: https://supabase.com/dashboard/project/ounmeqvyjjzlndbhnufk/settings/functions
 2. Click **"Add new secret"**
 3. Name: `GOOGLE_API_KEY`
-4. Value: `AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY`
+4. Value: `AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o`
 5. Click **Save**
 
 ### 3️⃣ Start Development Server (1 minute)

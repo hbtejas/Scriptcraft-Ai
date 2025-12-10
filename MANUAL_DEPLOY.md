@@ -17,7 +17,7 @@ Since Supabase CLI login has issues, here's how to deploy Edge Functions manuall
 5. Click "Add new secret"
 6. Enter:
    - **Name**: `GOOGLE_API_KEY`
-   - **Value**: `AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY`
+   - **Value**: `AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o`
 7. Click "Save"
 
 ✅ **Verify**: You should see `GOOGLE_API_KEY` in the secrets list
@@ -179,7 +179,7 @@ After deployment, verify:
 
 1. Go to Edge Functions → Secrets
 2. Verify `GOOGLE_API_KEY` exists
-3. Value should be: `AIzaSyAp9jrCcYN33N3z6x2fKVOvkFSNLNFBIwY`
+3. Value should be: `AIzaSyCS1rB1mlyN7-gsLsqUQ1abErlBM0QRb-o`
 4. If not, add/update it
 
 ---
